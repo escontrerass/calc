@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const Title = ({ title }) => {
-  return <h2 className='text-3xl text-center text-fontPrimary'>{title}</h2>;
+export const Title = ({ text }) => {
+  return <h2 className='text-4xl text-center text-sky-400 mb-4'>{text}</h2>;
 };

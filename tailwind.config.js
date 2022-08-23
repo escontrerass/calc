@@ -5,8 +5,6 @@ module.exports = {
     extend: {
       colors: {
         bgDark: '#20232a',
-        fontPrimary: '#629e54',
-        fontSecondary: '#3b5e8e',
       },
     },
   },

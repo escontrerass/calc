@@ -1,47 +1,98 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { appContext } from '../context/appContext';
 import {
   ageValidator,
   weightValidatorDec,
   weightValidatorImp,
   heightValidatorDec,
   heightValidatorImp,
+  wDecToImp,
+  wImpToDec,
+  hDecToImp,
+  hImpToDec,
 } from '../utils/formValidator';
 
 export const Calc = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    setValue,
     formState: { errors },
   } = useForm({
+    mode: 'onChange',
     defaultValues: {
       system: '',
     },
   });
-  const onSubmit = (data) => console.log(data);
+  const {
+    system,
+    setSystem,
+    age,
+    setAge,
+    weight,
+    setWeight,
+    height,
+    setHeight,
+    calCalories,
+  } = useContext(appContext);
 
-  const labelStyle = 'font-bold text-xl mt-5';
+  const labelStyle = 'font-bold text-xl mt-5 text-sky-400';
   const inputStyle =
     'block w-full bg-transparent outline-none border-b-2 border-white py-2 px-4 text-white placeholder-gray-400 focus:bg-gray-800 hover:bg-gray-800';
 
-  const selectSystem = watch('system');
   const weightValidator = (value) => {
-    if (selectSystem === 'dec') return weightValidatorDec(value);
-    if (selectSystem === 'imp') return weightValidatorImp(value);
+    if (system === 'dec') return weightValidatorDec(value);
+    if (system === 'imp') return weightValidatorImp(value);
   };
   const heightValidator = (value) => {
-    if (selectSystem === 'dec') return heightValidatorDec(value);
-    if (selectSystem === 'imp') return heightValidatorImp(value);
+    if (system === 'dec') return heightValidatorDec(value);
+    if (system === 'imp') return heightValidatorImp(value);
   };
+
+  const onChangeAge = (value) => setAge(value.target.value);
+  const onChangeWeight = (value) =>
+    system === 'dec'
+      ? setWeight(wDecToImp(value.target.value))
+      : setWeight(value.target.value);
+  const onChangeHeight = (value) => {
+    system === 'dec'
+      ? setHeight(hDecToImp(value.target.value))
+      : setHeight(value.target.value);
+  };
+
+  const onChangeSystem = (value) => {
+    const selectSystem = value.target.value;
+    setSystem(selectSystem);
+    if (selectSystem === 'imp' && weight !== null) setValue('weight', weight);
+    if (selectSystem === 'dec' && weight !== null)
+      setValue('weight', wImpToDec(weight));
+    if (selectSystem === 'imp' && height !== null) setValue('height', height);
+    if (selectSystem === 'dec' && height !== null)
+      setValue('height', hImpToDec(height));
+  };
+
+  const onSubmit = () => calCalories();
+
+  useEffect(() => {
+    calCalories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [age, weight, height]);
 
   return (
     <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label htmlFor='age' className={`${labelStyle} text-fontSecondary`}>
+        <label htmlFor='age' className={labelStyle}>
           Sistema:
         </label>
-        <select className={inputStyle} {...register('system')}>
+        <select
+          className={`${inputStyle} ${
+            errors.system
+              ? 'text-red-400 border-red-500'
+              : 'text-green-400 border-green-500'
+          }`}
+          {...register('system', { onChange: onChangeSystem })}
+        >
           <option disabled value=''>
             Seleccione un sistema
           </option>
@@ -49,15 +100,10 @@ export const Calc = () => {
           <option value='imp'>Imperial</option>
         </select>
       </div>
-      {!(selectSystem === '') && (
+      {!(system === '') && (
         <div>
           <div>
-            <label
-              htmlFor='age'
-              className={`${labelStyle} ${
-                errors.age ? 'text-red-400' : 'text-fontSecondary'
-              }`}
-            >
+            <label htmlFor='age' className={labelStyle}>
               Edad:
             </label>
             <input
@@ -69,8 +115,13 @@ export const Calc = () => {
               }`}
               placeholder='Ingrese su edad'
               {...register('age', {
-                required: { value: true, message: 'El campo es requerido' },
+                required: { value: true, message: 'Este campo es requerido' },
+                pattern: {
+                  value: /^\d*(\.\d+)?$/,
+                  message: 'Solo se permite números positivos',
+                },
                 validate: ageValidator,
+                onChange: onChangeAge,
               })}
             />
             {errors.age?.message && (
@@ -80,16 +131,12 @@ export const Calc = () => {
             )}
           </div>
           <div>
-            <label
-              htmlFor='weight'
-              className={`font-bold text-xl ${
-                errors.age ? 'text-red-400' : 'text-fontSecondary'
-              }`}
-            >
-              Peso:
+            <label htmlFor='weight' className={labelStyle}>
+              {`Peso (${system === 'dec' ? 'Kg' : 'Lb'}):`}
             </label>
             <input
               type='number'
+              step='any'
               className={`${inputStyle} ${
                 errors.weight
                   ? 'text-red-400 border-red-500'
@@ -97,8 +144,14 @@ export const Calc = () => {
               }`}
               placeholder='Ingrese su peso'
               {...register('weight', {
-                required: true,
+                required: { value: true, message: 'Este campo es requerido' },
+                pattern: {
+                  value: /^[0-9]+([.][0-9]{1,4})?$/,
+                  message:
+                    'Solo se permite números, positivos y un máximo de 4 decimales',
+                },
                 validate: weightValidator,
+                onChange: onChangeWeight,
               })}
             />
             {errors.weight?.message && (
@@ -108,16 +161,12 @@ export const Calc = () => {
             )}
           </div>
           <div>
-            <label
-              htmlFor='height'
-              className={`font-bold text-xl ${
-                errors.age ? 'text-red-400' : 'text-fontSecondary'
-              }`}
-            >
-              Altura:
+            <label htmlFor='height' className={labelStyle}>
+              {`Altura (${system === 'dec' ? 'Mts' : 'In'}):`}
             </label>
             <input
               type='number'
+              step='any'
               className={`${inputStyle} ${
                 errors.height
                   ? 'text-red-400 border-red-500'
@@ -125,8 +174,14 @@ export const Calc = () => {
               }`}
               placeholder='Ingrese su altura'
               {...register('height', {
-                required: true,
+                required: { value: true, message: 'Este campo es requerido' },
+                pattern: {
+                  value: /^[0-9]+([.][0-9]{1,4})?$/,
+                  message:
+                    'Solo se permite números, positivos y un máximo de 4 decimales',
+                },
                 validate: heightValidator,
+                onChange: onChangeHeight,
               })}
             />
             {errors.height?.message && (
@@ -135,7 +190,6 @@ export const Calc = () => {
               </p>
             )}
           </div>
-          <input type='submit' />
         </div>
       )}
     </form>

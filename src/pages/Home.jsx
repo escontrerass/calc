@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Calc } from '../components/Calc';
+import { Calories } from '../components/Calories';
+import { SecondaryButton } from '../components/SecondaryButton';
 import { Title } from '../components/Title';
 import { Layout } from '../containers/Layout';
+import { appContext } from '../context/appContext';
 
 export const Home = () => {
+  const { setStatus } = useContext(appContext);
+  const handleLogout = () => setStatus(false);
+
   return (
     <Layout>
-      <Title title='Formulario de calorías' />
-      <Calc />
+      <Title text='Formulario de calorías' />
+      <div className='absolute top-0 right-0'>
+        <SecondaryButton
+          title='Desconectar'
+          redirect='/login'
+          handle={handleLogout}
+        />
+      </div>
+      <div className='grid grid-cols-2 gap-5'>
+        <Calc />
+        <Calories />
+      </div>
     </Layout>
   );
 };
