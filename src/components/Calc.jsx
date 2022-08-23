@@ -12,6 +12,8 @@ import {
   hDecToImp,
   hImpToDec,
 } from '../utils/formValidator';
+import { Label } from './Label';
+import { Error } from '../components/Error';
 
 export const Calc = () => {
   const {
@@ -37,7 +39,6 @@ export const Calc = () => {
     calCalories,
   } = useContext(appContext);
 
-  const labelStyle = 'font-bold text-xl mt-5 text-sky-400';
   const inputStyle =
     'block w-full bg-transparent outline-none border-b-2 border-white py-2 px-4 text-white placeholder-gray-400 focus:bg-gray-800 hover:bg-gray-800';
 
@@ -82,9 +83,7 @@ export const Calc = () => {
   return (
     <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label htmlFor='age' className={labelStyle}>
-          Sistema:
-        </label>
+        <Label text='Sistema métrico' />
         <select
           className={`${inputStyle} ${
             errors.system
@@ -103,9 +102,7 @@ export const Calc = () => {
       {!(system === '') && (
         <div>
           <div>
-            <label htmlFor='age' className={labelStyle}>
-              Edad:
-            </label>
+            <Label text='Edad' />
             <input
               type='number'
               className={`${inputStyle} ${
@@ -124,16 +121,10 @@ export const Calc = () => {
                 onChange: onChangeAge,
               })}
             />
-            {errors.age?.message && (
-              <p className='text-sm text-red-400 mt-2'>
-                {errors.age?.message}.
-              </p>
-            )}
+            {errors.age?.message && <Error text={errors.age?.message} />}
           </div>
           <div>
-            <label htmlFor='weight' className={labelStyle}>
-              {`Peso (${system === 'dec' ? 'Kg' : 'Lb'}):`}
-            </label>
+            <Label text={`Peso (${system === 'dec' ? 'Kg' : 'Lb'})`} />
             <input
               type='number'
               step='any'
@@ -154,16 +145,10 @@ export const Calc = () => {
                 onChange: onChangeWeight,
               })}
             />
-            {errors.weight?.message && (
-              <p className='text-sm text-red-400 mt-2'>
-                {errors.weight?.message}.
-              </p>
-            )}
+            {errors.weight?.message && <Error text={errors.weight?.message} />}
           </div>
           <div>
-            <label htmlFor='height' className={labelStyle}>
-              {`Altura (${system === 'dec' ? 'Mts' : 'In'}):`}
-            </label>
+            <Label text={`Altura (${system === 'dec' ? 'Mts' : 'In'})`} />
             <input
               type='number'
               step='any'
@@ -184,11 +169,7 @@ export const Calc = () => {
                 onChange: onChangeHeight,
               })}
             />
-            {errors.height?.message && (
-              <p className='text-sm text-red-400 mt-2'>
-                {errors.height?.message}.
-              </p>
-            )}
+            {errors.height?.message && <Error text={errors.height?.message} />}
           </div>
         </div>
       )}
