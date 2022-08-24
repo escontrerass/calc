@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const Layout = ({ children }) => {
   return (
     <div className='grid bg-bgDark h-screen w-full'>
-      <div className='relative place-self-center text-white w-4/5'>
+      <div className='relative place-self-center text-white w-4/5 max-w-screen-md'>
         <div className='w-1/4 mx-auto'>
           <img src={logo} alt='Logo calculadora' />
         </div>

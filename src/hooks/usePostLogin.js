@@ -1,4 +1,3 @@
-import React from 'react';
 import { apiURL } from '../services/apiRest';
 import axios from 'axios';
 import { toast } from 'react-toastify';

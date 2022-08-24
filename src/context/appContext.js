@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import {
   ageValidator,
   heightValidatorImp,
@@ -16,7 +16,8 @@ export function AppContextProvider({ children }) {
   const [height, setHeight] = useState('');
   const [calories, setCalories] = useState('');
 
-  const calCalories = () => {
+  const calCalories = useCallback(() => {
+    console.log('hola');
     let factor = null;
     if (weight < 165) factor = 1.6;
     else if (weight >= 165 && weight <= 200) factor = 1.4;
@@ -33,8 +34,7 @@ export function AppContextProvider({ children }) {
         );
       else setCalories('Datos inválidos');
     } else setCalories('');
-  };
-
+  }, [age, height, weight]);
   return (
     <appContext.Provider
       value={{
