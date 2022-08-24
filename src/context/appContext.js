@@ -9,6 +9,7 @@ export const appContext = createContext({});
 
 export function AppContextProvider({ children }) {
   const [status, setStatus] = useState(false);
+  const [user, setUser] = useState('');
   const [system, setSystem] = useState('');
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
@@ -39,6 +40,8 @@ export function AppContextProvider({ children }) {
       value={{
         status,
         setStatus,
+        user,
+        setUser,
         system,
         setSystem,
         age,

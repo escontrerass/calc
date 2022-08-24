@@ -18,11 +18,7 @@ export const Home = () => {
         <Layout>
           <Title text='Formulario de calorías' />
           <div className='absolute top-0 right-0'>
-            <SecondaryButton
-              title='Desconectar'
-              redirect='/login'
-              handle={handleLogout}
-            />
+            <SecondaryButton title='Desconectar' handle={handleLogout} />
           </div>
           <div className='grid grid-cols-2 gap-5'>
             <Calc />

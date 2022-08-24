@@ -1,5 +1,7 @@
 import React from 'react';
 import logo from '../assets/Logo.png';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Layout = ({ children }) => {
   return (
@@ -12,6 +14,7 @@ export const Layout = ({ children }) => {
           Calculadora de calorías
         </h1>
         {children}
+        <ToastContainer theme='dark' />
       </div>
     </div>
   );
